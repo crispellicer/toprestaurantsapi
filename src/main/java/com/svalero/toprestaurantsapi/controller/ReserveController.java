@@ -1,9 +1,11 @@
 package com.svalero.toprestaurantsapi.controller;
 
 import com.svalero.toprestaurantsapi.domain.Reserve;
-import com.svalero.toprestaurantsapi.domain.dto.ReserveDTO;
+import com.svalero.toprestaurantsapi.domain.Restaurant;
+import com.svalero.toprestaurantsapi.domain.dto.ReserveInDTO;
 import com.svalero.toprestaurantsapi.exception.*;
 import com.svalero.toprestaurantsapi.service.ReserveService;
+import com.svalero.toprestaurantsapi.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -23,14 +25,24 @@ public class ReserveController {
     @Autowired
     private ReserveService reserveService;
 
+    @Autowired
+    private RestaurantService restaurantService;
+
     @GetMapping("/reserves")
-    public ResponseEntity<List<Reserve>> getReserves(@RequestParam(name = "paid", defaultValue = "") String paid) {
-        if (paid.equals("")) {
+    public ResponseEntity<List<Reserve>> getReserves(@RequestParam(name = "isPaid", defaultValue = "") String isPaid) {
+        if (isPaid.equals("")) {
             return ResponseEntity.ok(reserveService.findAll());
         } else {
-            boolean isPaid = Boolean.parseBoolean(paid);
-            return ResponseEntity.ok(reserveService.findByIsPaid(isPaid));
+            boolean paid = Boolean.parseBoolean(isPaid);
+            return ResponseEntity.ok(reserveService.findAllByIsPaid(paid));
         }
+    }
+
+    @GetMapping("restaurants/{restaurantId}/reserves")
+    public ResponseEntity<List<Reserve>> getReservesByRestaurantId(@PathVariable long restaurantId) throws RestaurantNotFoundException{
+        Restaurant restaurant = restaurantService.findById(restaurantId);
+        List<Reserve> reserves = reserveService.findByRestaurant(restaurant);
+        return ResponseEntity.ok(reserves);
     }
 
     @GetMapping("/reserves/{id}")
@@ -39,9 +51,9 @@ public class ReserveController {
         return ResponseEntity.ok(reserve);
     }
 
-    @PostMapping("/reserves")
-    public ResponseEntity<Reserve> addReserve(@Valid @RequestBody ReserveDTO reserveDTO) throws RestaurantNotFoundException, CustomerNotFoundException, ShiftNotFoundException {
-        Reserve newReserve = reserveService.addReserve(reserveDTO);
+    @PostMapping("/restaurants/{restaurantId}/reserves")
+    public ResponseEntity<Reserve> addReserve(@PathVariable long restaurantId, @Valid @RequestBody ReserveInDTO reserveInDTO) throws RestaurantNotFoundException, CustomerNotFoundException, ShiftNotFoundException {
+        Reserve newReserve = reserveService.addReserve(reserveInDTO, restaurantId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newReserve);
     }
 

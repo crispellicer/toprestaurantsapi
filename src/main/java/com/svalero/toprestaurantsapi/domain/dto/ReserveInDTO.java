@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReserveDTO {
+public class ReserveInDTO {
 
     @Min(value = 1)
     private int people;
@@ -20,8 +20,6 @@ public class ReserveDTO {
     private LocalDate reserveDate;
     private boolean isPaid;
     private boolean allergic;
-    @Min(value = 1)
-    private long restaurant;
     @Min(value = 1)
     private long customer;
     @Min(value = 1)

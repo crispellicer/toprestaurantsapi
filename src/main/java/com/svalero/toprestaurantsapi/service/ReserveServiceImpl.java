@@ -4,7 +4,7 @@ import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.domain.Reserve;
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.domain.Shift;
-import com.svalero.toprestaurantsapi.domain.dto.ReserveDTO;
+import com.svalero.toprestaurantsapi.domain.dto.ReserveInDTO;
 import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 import com.svalero.toprestaurantsapi.exception.ReserveNotFoundException;
 import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
@@ -50,24 +50,24 @@ public class ReserveServiceImpl implements ReserveService{
     }
 
     @Override
-    public List<Reserve> findByIsPaid(boolean isPaid) {
+    public List<Reserve> findAllByIsPaid(boolean isPaid) {
         return reserveRepository.findByIsPaid(isPaid);
     }
 
     @Override
-    public Reserve addReserve(ReserveDTO reserveDTO) throws RestaurantNotFoundException, CustomerNotFoundException, ShiftNotFoundException {
+    public Reserve addReserve(ReserveInDTO reserveInDTO, long restaurantId) throws RestaurantNotFoundException, CustomerNotFoundException, ShiftNotFoundException {
         Reserve newReserve = new Reserve();
-        modelMapper.map(reserveDTO, newReserve);
+        modelMapper.map(reserveInDTO, newReserve);
 
-        Restaurant restaurant = restaurantRepository.findById(reserveDTO.getRestaurant())
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(RestaurantNotFoundException::new);
         newReserve.setRestaurant(restaurant);
 
-        Customer customer = customerRepository.findById(reserveDTO.getCustomer())
+        Customer customer = customerRepository.findById(reserveInDTO.getCustomer())
                 .orElseThrow(CustomerNotFoundException::new);
         newReserve.setCustomer(customer);
 
-        Shift shift = shiftRepository.findById(reserveDTO.getShift())
+        Shift shift = shiftRepository.findById(reserveInDTO.getShift())
                 .orElseThrow(CustomerNotFoundException::new);
         newReserve.setShift(shift);
 
@@ -91,5 +91,10 @@ public class ReserveServiceImpl implements ReserveService{
         existingReserve.setPaid(newReserve.isPaid());
         existingReserve.setAllergic(newReserve.isAllergic());
         return reserveRepository.save(existingReserve);
+    }
+
+    @Override
+    public List<Reserve> findByRestaurant(Restaurant restaurant) {
+        return reserveRepository.findByRestaurant(restaurant);
     }
 }
