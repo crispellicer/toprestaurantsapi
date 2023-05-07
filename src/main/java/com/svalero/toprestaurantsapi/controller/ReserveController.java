@@ -3,9 +3,12 @@ package com.svalero.toprestaurantsapi.controller;
 import com.svalero.toprestaurantsapi.domain.Reserve;
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.domain.dto.ReserveInDTO;
+import com.svalero.toprestaurantsapi.domain.dto.ReserveOutDTO;
 import com.svalero.toprestaurantsapi.exception.*;
 import com.svalero.toprestaurantsapi.service.ReserveService;
 import com.svalero.toprestaurantsapi.service.RestaurantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -24,16 +27,20 @@ public class ReserveController {
 
     @Autowired
     private ReserveService reserveService;
-
     @Autowired
     private RestaurantService restaurantService;
 
+    private final Logger logger = LoggerFactory.getLogger(ReserveController.class);
+
     @GetMapping("/reserves")
-    public ResponseEntity<List<Reserve>> getReserves(@RequestParam(name = "isPaid", defaultValue = "") String isPaid) {
+    public ResponseEntity<List<ReserveOutDTO>> getReserves(@RequestParam(name = "isPaid", defaultValue = "") String isPaid) {
+        logger.debug("begin getReserves");
         if (isPaid.equals("")) {
+            logger.debug("end getReserves");
             return ResponseEntity.ok(reserveService.findAll());
         } else {
             boolean paid = Boolean.parseBoolean(isPaid);
+            logger.debug("end getReserves");
             return ResponseEntity.ok(reserveService.findAllByIsPaid(paid));
         }
     }
@@ -71,6 +78,7 @@ public class ReserveController {
 
     @ExceptionHandler(ReserveNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleReserveNotFoundException(ReserveNotFoundException rnfe) {
+        logger.error(rnfe.getMessage(), rnfe);
         ErrorMessage errorMessage = new ErrorMessage(404, rnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
@@ -101,7 +109,8 @@ public class ReserveController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleException(Exception e) {
+    public ResponseEntity<ErrorMessage> handleException(Exception exception) {
+        logger.error(exception.getMessage(), exception);
         ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error");
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }

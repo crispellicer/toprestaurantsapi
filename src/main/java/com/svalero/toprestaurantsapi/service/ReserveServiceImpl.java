@@ -5,6 +5,7 @@ import com.svalero.toprestaurantsapi.domain.Reserve;
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.domain.Shift;
 import com.svalero.toprestaurantsapi.domain.dto.ReserveInDTO;
+import com.svalero.toprestaurantsapi.domain.dto.ReserveOutDTO;
 import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 import com.svalero.toprestaurantsapi.exception.ReserveNotFoundException;
 import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
@@ -14,9 +15,11 @@ import com.svalero.toprestaurantsapi.repository.ReserveRepository;
 import com.svalero.toprestaurantsapi.repository.RestaurantRepository;
 import com.svalero.toprestaurantsapi.repository.ShiftRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,8 +37,19 @@ public class ReserveServiceImpl implements ReserveService{
     private ModelMapper modelMapper;
 
     @Override
-    public List<Reserve> findAll() {
-        return reserveRepository.findAll();
+    public List<ReserveOutDTO> findAll() {
+        List<Reserve> reserves = reserveRepository.findAll();
+        List<ReserveOutDTO> reservesOutDTO = modelMapper.map(reserves, new TypeToken<List<ReserveOutDTO>>() {}.getType());
+
+        return reservesOutDTO;
+    }
+
+    @Override
+    public List<ReserveOutDTO> findAllByIsPaid(boolean isPaid) {
+        List<Reserve> reserves = reserveRepository.findAllByIsPaid(isPaid);
+        List<ReserveOutDTO> reservesOutDTO = modelMapper.map(reserves, new TypeToken<List<ReserveOutDTO>>() {}.getType());
+
+        return reservesOutDTO;
     }
 
     //@Override
@@ -47,11 +61,6 @@ public class ReserveServiceImpl implements ReserveService{
     public Reserve findById(long id) throws ReserveNotFoundException {
         return reserveRepository.findById(id)
                 .orElseThrow(ReserveNotFoundException::new);
-    }
-
-    @Override
-    public List<Reserve> findAllByIsPaid(boolean isPaid) {
-        return reserveRepository.findByIsPaid(isPaid);
     }
 
     @Override

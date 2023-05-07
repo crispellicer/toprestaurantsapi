@@ -13,6 +13,6 @@ public interface ReserveRepository extends CrudRepository<Reserve, Long> {
 
     List<Reserve> findAll();
     //Reserve findByCustomerName(String customerName);
-    List<Reserve> findByIsPaid(boolean isPaid);
+    List<Reserve> findAllByIsPaid(boolean isPaid);
     List<Reserve> findByRestaurant(Restaurant restaurant);
 }
