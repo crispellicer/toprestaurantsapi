@@ -1,8 +1,14 @@
 package com.svalero.toprestaurantsapi.service;
 
-import com.svalero.toprestaurantsapi.domain.Restaurant;
+import com.svalero.toprestaurantsapi.domain.*;
+import com.svalero.toprestaurantsapi.domain.dto.RestaurantDTO;
+import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
+import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
+import com.svalero.toprestaurantsapi.exception.ShiftNotFoundException;
+import com.svalero.toprestaurantsapi.repository.AddressRepository;
 import com.svalero.toprestaurantsapi.repository.RestaurantRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +19,12 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     @Autowired
     RestaurantRepository restaurantRepository;
+
+    @Autowired
+    AddressRepository addressRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public List<Restaurant> findAll() {
@@ -31,8 +43,14 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public Restaurant addRestaurant(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
+    public Restaurant addRestaurant(RestaurantDTO restaurantDTO) throws AddressNotFoundException {
+        Restaurant newRestaurant = new Restaurant();
+        modelMapper.map(restaurantDTO, newRestaurant);
+        Address address = addressRepository.findById(restaurantDTO.getAddress())
+                .orElseThrow(AddressNotFoundException::new);
+        newRestaurant.setAddress(address);
+
+        return restaurantRepository.save(newRestaurant);
     }
 
     @Override
@@ -50,7 +68,7 @@ public class RestaurantServiceImpl implements RestaurantService{
         existingRestaurant.setTimetable(newRestaurant.getTimetable());
         existingRestaurant.setReservePrice(newRestaurant.getReservePrice());
         existingRestaurant.setVeganMenu(newRestaurant.isVeganMenu());
-        existingRestaurant.setWebsite(newRestaurant.getWebsite());
+        existingRestaurant.setWebsite(newRestaurant.getWebsite());;
         return restaurantRepository.save(existingRestaurant);
     }
 }

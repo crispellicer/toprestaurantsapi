@@ -1,5 +1,6 @@
 package com.svalero.toprestaurantsapi.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class Address {
     private String city;
 
     @OneToOne(mappedBy = "address")
+    @JsonBackReference(value = "address_restaurant")
     private Restaurant restaurant;
 
 }

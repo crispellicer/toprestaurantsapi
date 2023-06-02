@@ -1,7 +1,9 @@
 package com.svalero.toprestaurantsapi.service;
 
 import com.svalero.toprestaurantsapi.domain.Address;
+import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
+import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 import com.svalero.toprestaurantsapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,14 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public Address modifyAddress(long id, Address newAddress) throws AddressNotFoundException {
-        return null;
+        Address existingAddress = addressRepository.findById(id)
+                .orElseThrow(AddressNotFoundException::new);
+        existingAddress.setType(newAddress.getType());
+        existingAddress.setName(newAddress.getName());
+        existingAddress.setNumber(newAddress.getNumber());
+        existingAddress.setPostalCode(newAddress.getPostalCode());
+        existingAddress.setCity(newAddress.getCity());
+
+        return addressRepository.save(existingAddress);
     }
 }

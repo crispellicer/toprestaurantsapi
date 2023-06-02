@@ -1,6 +1,9 @@
 package com.svalero.toprestaurantsapi.service;
 
+import com.svalero.toprestaurantsapi.domain.Address;
+import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.domain.Shift;
+import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
 import com.svalero.toprestaurantsapi.exception.ShiftNotFoundException;
 import com.svalero.toprestaurantsapi.repository.ShiftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,11 @@ public class ShiftServiceImpl implements ShiftService{
     }
 
     @Override
+    public List<Shift> findByName(String name) {
+        return shiftRepository.findByName(name);
+    }
+
+    @Override
     public Shift addShift(Shift shift) {
         return shiftRepository.save(shift);
     }
@@ -39,6 +47,12 @@ public class ShiftServiceImpl implements ShiftService{
 
     @Override
     public Shift modifyShift(long id, Shift newShift) throws ShiftNotFoundException {
-        return null;
+        Shift existingShift = shiftRepository.findById(id)
+                .orElseThrow(ShiftNotFoundException::new);
+        existingShift.setName(newShift.getName());
+        existingShift.setStartTime(newShift.getStartTime());
+        existingShift.setEndingTime(newShift.getEndingTime());
+
+        return shiftRepository.save(existingShift);
     }
 }

@@ -32,6 +32,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<Customer> findByName(String name) {
+        return customerRepository.findByName(name);
+    }
+
+    @Override
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
@@ -47,7 +52,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer modifyCustomer(long id, Customer newCustomer) throws CustomerNotFoundException {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(CustomerNotFoundException::new);
-        modelMapper.map(existingCustomer, newCustomer);
+        existingCustomer.setName(newCustomer.getName());
+        existingCustomer.setSurname(newCustomer.getSurname());
+        existingCustomer.setTelephone(newCustomer.getTelephone());
+        existingCustomer.setBirthDate(newCustomer.getBirthDate());
+        existingCustomer.setVip(newCustomer.isVip());
 
         return customerRepository.save(existingCustomer);
     }

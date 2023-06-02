@@ -77,7 +77,7 @@ public class ReserveServiceImpl implements ReserveService{
         newReserve.setCustomer(customer);
 
         Shift shift = shiftRepository.findById(reserveInDTO.getShift())
-                .orElseThrow(CustomerNotFoundException::new);
+                .orElseThrow(ShiftNotFoundException::new);
         newReserve.setShift(shift);
 
         return reserveRepository.save(newReserve);

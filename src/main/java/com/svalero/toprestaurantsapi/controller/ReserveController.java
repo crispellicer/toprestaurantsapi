@@ -29,7 +29,6 @@ public class ReserveController {
     private ReserveService reserveService;
     @Autowired
     private RestaurantService restaurantService;
-
     private final Logger logger = LoggerFactory.getLogger(ReserveController.class);
 
     @GetMapping("/reserves")
@@ -45,7 +44,7 @@ public class ReserveController {
         }
     }
 
-    @GetMapping("restaurants/{restaurantId}/reserves")
+    @GetMapping("/restaurants/{restaurantId}/reserves")
     public ResponseEntity<List<Reserve>> getReservesByRestaurantId(@PathVariable long restaurantId) throws RestaurantNotFoundException{
         Restaurant restaurant = restaurantService.findById(restaurantId);
         List<Reserve> reserves = reserveService.findByRestaurant(restaurant);
@@ -53,14 +52,18 @@ public class ReserveController {
     }
 
     @GetMapping("/reserves/{id}")
-    public ResponseEntity<Reserve> getReserves(@PathVariable long id) throws ReserveNotFoundException {
+    public ResponseEntity<Reserve> getReserve(@PathVariable long id) throws ReserveNotFoundException {
+        logger.debug("begin getReserve");
         Reserve reserve = reserveService.findById(id);
+        logger.debug("end getReserve");
         return ResponseEntity.ok(reserve);
     }
 
     @PostMapping("/restaurants/{restaurantId}/reserves")
     public ResponseEntity<Reserve> addReserve(@PathVariable long restaurantId, @Valid @RequestBody ReserveInDTO reserveInDTO) throws RestaurantNotFoundException, CustomerNotFoundException, ShiftNotFoundException {
+        logger.debug("begin addReserve");
         Reserve newReserve = reserveService.addReserve(reserveInDTO, restaurantId);
+        logger.debug("end addReserve");
         return ResponseEntity.status(HttpStatus.CREATED).body(newReserve);
     }
 
@@ -72,7 +75,9 @@ public class ReserveController {
 
     @PutMapping("/reserves/{id}")
     public ResponseEntity<Reserve> modifyReserve(@PathVariable long id, @RequestBody Reserve reserve) throws ReserveNotFoundException {
+        logger.debug("begin modifyReserve");
         Reserve modifiedReserve = reserveService.modifyReserve(id, reserve);
+        logger.debug("end modifyReserve");
         return ResponseEntity.status(HttpStatus.OK).body(modifiedReserve);
     }
 
@@ -85,12 +90,14 @@ public class ReserveController {
 
     @ExceptionHandler(RestaurantNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleRestaurantNotFoundException(RestaurantNotFoundException rnfe) {
+        logger.error(rnfe.getMessage(), rnfe);
         ErrorMessage errorMessage = new ErrorMessage(404, rnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleCustomerNotFoundException(CustomerNotFoundException cnfe) {
+        logger.error(cnfe.getMessage(), cnfe);
         ErrorMessage errorMessage = new ErrorMessage(404, cnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
