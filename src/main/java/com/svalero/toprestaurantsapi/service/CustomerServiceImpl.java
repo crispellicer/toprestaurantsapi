@@ -1,9 +1,7 @@
 package com.svalero.toprestaurantsapi.service;
 
 import com.svalero.toprestaurantsapi.domain.Customer;
-import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
-import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
 import com.svalero.toprestaurantsapi.repository.CustomerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

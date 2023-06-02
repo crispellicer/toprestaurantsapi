@@ -1,9 +1,7 @@
 package com.svalero.toprestaurantsapi.service;
 
 import com.svalero.toprestaurantsapi.domain.Address;
-import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
-import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 import com.svalero.toprestaurantsapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

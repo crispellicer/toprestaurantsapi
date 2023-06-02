@@ -15,7 +15,6 @@ import java.util.List;
 public interface ReserveService {
 
     List<ReserveOutDTO> findAll();
-    //Reserve findByCustomerName(String customerName);
     List<ReserveOutDTO> findAllByIsPaid(boolean isPaid);
     Reserve findById(long id) throws ReserveNotFoundException;
     List<Reserve> findByRestaurant(Restaurant restaurant);

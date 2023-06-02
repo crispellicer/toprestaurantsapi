@@ -1,6 +1,5 @@
 package com.svalero.toprestaurantsapi.controller;
 
-import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.domain.Shift;
 import com.svalero.toprestaurantsapi.exception.ErrorMessage;
 import com.svalero.toprestaurantsapi.exception.ShiftNotFoundException;

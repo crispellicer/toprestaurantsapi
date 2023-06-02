@@ -52,11 +52,6 @@ public class ReserveServiceImpl implements ReserveService{
         return reservesOutDTO;
     }
 
-    //@Override
-    //public Reserve findByCustomerName(String customerName) {
-    //    return reserveRepository.findByCustomerName(customerName);
-  //  }
-
     @Override
     public Reserve findById(long id) throws ReserveNotFoundException {
         return reserveRepository.findById(id)

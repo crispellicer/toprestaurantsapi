@@ -1,10 +1,7 @@
 package com.svalero.toprestaurantsapi.service;
 
 import com.svalero.toprestaurantsapi.domain.Address;
-import com.svalero.toprestaurantsapi.domain.Customer;
-import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
-import com.svalero.toprestaurantsapi.exception.CustomerNotFoundException;
 
 import java.util.List;
 

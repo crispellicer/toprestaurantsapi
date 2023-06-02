@@ -1,6 +1,5 @@
 package com.svalero.toprestaurantsapi.controller;
 
-import com.svalero.toprestaurantsapi.domain.Reserve;
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.domain.dto.RestaurantDTO;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;

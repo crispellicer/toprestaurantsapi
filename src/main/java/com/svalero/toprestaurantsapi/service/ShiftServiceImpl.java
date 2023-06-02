@@ -1,9 +1,6 @@
 package com.svalero.toprestaurantsapi.service;
 
-import com.svalero.toprestaurantsapi.domain.Address;
-import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.domain.Shift;
-import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
 import com.svalero.toprestaurantsapi.exception.ShiftNotFoundException;
 import com.svalero.toprestaurantsapi.repository.ShiftRepository;
 import org.springframework.beans.factory.annotation.Autowired;

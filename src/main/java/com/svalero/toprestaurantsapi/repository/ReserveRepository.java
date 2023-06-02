@@ -1,6 +1,5 @@
 package com.svalero.toprestaurantsapi.repository;
 
-import com.svalero.toprestaurantsapi.domain.Customer;
 import com.svalero.toprestaurantsapi.domain.Reserve;
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import org.springframework.data.repository.CrudRepository;

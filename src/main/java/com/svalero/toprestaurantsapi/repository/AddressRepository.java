@@ -1,7 +1,6 @@
 package com.svalero.toprestaurantsapi.repository;
 
 import com.svalero.toprestaurantsapi.domain.Address;
-import com.svalero.toprestaurantsapi.domain.Restaurant;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
