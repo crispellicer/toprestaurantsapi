@@ -2,6 +2,7 @@ package com.svalero.toprestaurantsapi.controller;
 
 import com.svalero.toprestaurantsapi.domain.Restaurant;
 import com.svalero.toprestaurantsapi.domain.dto.RestaurantDTO;
+import com.svalero.toprestaurantsapi.exception.AddressAlreadyInARestaurantException;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
 import com.svalero.toprestaurantsapi.exception.ErrorMessage;
 import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
@@ -50,7 +51,7 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurants")
-    public ResponseEntity<Restaurant> addRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) throws AddressNotFoundException {
+    public ResponseEntity<Restaurant> addRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) throws AddressNotFoundException, AddressAlreadyInARestaurantException {
         logger.debug("begin addRestaurant");
         Restaurant newRestaurant = restaurantService.addRestaurant(restaurantDTO);
         logger.debug("end addRestaurant");
@@ -84,6 +85,13 @@ public class RestaurantController {
         logger.error(anfe.getMessage(), anfe);
         ErrorMessage errorMessage = new ErrorMessage(404, anfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AddressAlreadyInARestaurantException.class)
+    public ResponseEntity<ErrorMessage> handleAddressAlreadyInARestaurantException(AddressAlreadyInARestaurantException aaiare) {
+        logger.error(aaiare.getMessage(), aaiare);
+        ErrorMessage errorMessage = new ErrorMessage(400, aaiare.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

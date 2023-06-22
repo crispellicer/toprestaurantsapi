@@ -2,6 +2,7 @@ package com.svalero.toprestaurantsapi.service;
 
 import com.svalero.toprestaurantsapi.domain.*;
 import com.svalero.toprestaurantsapi.domain.dto.RestaurantDTO;
+import com.svalero.toprestaurantsapi.exception.AddressAlreadyInARestaurantException;
 import com.svalero.toprestaurantsapi.exception.AddressNotFoundException;
 import com.svalero.toprestaurantsapi.exception.RestaurantNotFoundException;
 import com.svalero.toprestaurantsapi.repository.AddressRepository;
@@ -41,14 +42,20 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public Restaurant addRestaurant(RestaurantDTO restaurantDTO) throws AddressNotFoundException {
+    public Restaurant addRestaurant(RestaurantDTO restaurantDTO) throws AddressNotFoundException, AddressAlreadyInARestaurantException {
         Restaurant newRestaurant = new Restaurant();
         modelMapper.map(restaurantDTO, newRestaurant);
         Address address = addressRepository.findById(restaurantDTO.getAddress())
                 .orElseThrow(AddressNotFoundException::new);
-        newRestaurant.setAddress(address);
 
+        if (address.getRestaurant() != null){
+            throw new AddressAlreadyInARestaurantException();
+        }
+
+        newRestaurant.setAddress(address);
         return restaurantRepository.save(newRestaurant);
+
+
     }
 
     @Override
@@ -64,6 +71,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .orElseThrow(RestaurantNotFoundException::new);
         existingRestaurant.setName(newRestaurant.getName());
         existingRestaurant.setTimetable(newRestaurant.getTimetable());
+        existingRestaurant.setType(newRestaurant.getType());
         existingRestaurant.setReservePrice(newRestaurant.getReservePrice());
         existingRestaurant.setVeganMenu(newRestaurant.isVeganMenu());
         existingRestaurant.setWebsite(newRestaurant.getWebsite());;
